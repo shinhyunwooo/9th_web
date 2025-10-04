@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type { Movie } from "../types/movie";
 import { useState } from "react";
 
