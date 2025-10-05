@@ -24,7 +24,7 @@ export default function MoviePage() {
 
             try {
             const { data } = await axios.get<MovieResponse>(
-                `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=${page}`,
+                `https://api.themoviedb.org/3/movie/${category}?language=ko-KR&page=${page}`,
                 {
                     headers: {
                         Authorization: `Bearer ${import.meta.env.VITE_TMBD_KEY}`,
@@ -69,7 +69,7 @@ export default function MoviePage() {
     {!isPending && (
     <div className="p-10 grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
+        <MovieCard key={movie.id} movie={movie} category={category!} />
       ))}
     </div>
     )}

@@ -1,15 +1,18 @@
+import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import { useState } from "react";
 
 interface MovieCardProps {
   movie: Movie;
+  category: string;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, category }: MovieCardProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-    <div
+      <Link
+      to={`/movies/${category}/${movie.id}`}   // ✅ 상세 페이지로 이동
       className="relative rounded-xl shadow-lg overflow-hidden cursor-pointer w-44 transition-transform duration-500 hover:scale-105"
       onMouseEnter={(): void => setIsHovered(true)}
       onMouseLeave={(): void => setIsHovered(false)}
@@ -25,6 +28,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
             <p className="text-sm text-gray-300 leading-relaxed mt-2 line-clamp-5">{movie.overview}</p>
         </div>
       )}
-    </div>
+    </Link>
   );
 }
