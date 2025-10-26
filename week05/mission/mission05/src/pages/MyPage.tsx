@@ -1,17 +1,33 @@
 import { useEffect, useState } from "react";
-import { api } from "../apis/auth";
+import axios from "../apis/axios";
 import { useAuth } from "../context/authContext";
 
-type MeData = { id: number; name: string; email: string; bio: string | null; avatar: string | null };
+type MeData = {
+  id: number;
+  name: string;
+  email: string;
+  bio: string | null;
+  avatar: string | null;
+};
+
+type ApiResponse<T> = {
+  status: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+};
 
 export default function MyPage() {
   const { accessToken } = useAuth();
-  const [st, setSt] = useState<{ loading: boolean; error: string; data?: MeData }>({ loading: true, error: "" });
+  const [st, setSt] = useState<{ loading: boolean; error: string; data?: MeData }>({
+    loading: true,
+    error: "",
+  });
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get<{ status: boolean; statusCode: number; message: string; data: MeData }>("/v1/users/me");
+        const { data } = await axios.get<ApiResponse<MeData>>("/v1/users/me");
         setSt({ loading: false, error: "", data: data.data });
       } catch (e: any) {
         setSt({ loading: false, error: e?.message ?? "불러오기 실패" });
@@ -19,7 +35,7 @@ export default function MyPage() {
     })();
   }, [accessToken]);
 
-  if (st.loading) return <div className="p-6">Loading…</div>;
+  if (st.loading) return <div className="p-6">Loading...</div>;
   if (st.error) return <div className="p-6 text-red-400">에러: {st.error}</div>;
 
   const d = st.data!;

@@ -8,5 +8,6 @@ export default function ProtectedLayout() {
   if (!accessToken) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
+
   return <Outlet />;
 }

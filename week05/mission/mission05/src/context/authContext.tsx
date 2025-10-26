@@ -21,10 +21,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const login = async (signInData: LoginRequest) => {
     try {
-      const data = await postSignin(signInData);
-      if (!data.status) return false;
-      setAccessToken(data.data.accessToken);
-      setRefreshToken(data.data.refreshToken);
+      const res = await postSignin(signInData);
+      if (!res.status) return false;
+
+      setAccessToken(res.data.accessToken);
+      setRefreshToken(res.data.refreshToken);
       return true;
     } catch (error) {
       console.error("Login error:", error);
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const logout = async () => {
     try {
       await postSignout();
-    } catch (error) {
+    } catch (e) {
       console.warn("Signout API failed (ignored).");
     } finally {
       setAccessToken(null);
@@ -44,14 +45,23 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ accessToken, refreshToken, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        accessToken,
+        refreshToken,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within a AuthProvider");
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
 };
