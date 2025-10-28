@@ -1,4 +1,4 @@
-// src/main.tsx
+// src/main.tsx  ← 이 파일이 엔트리이므로 여기만 쓰자
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -12,7 +12,6 @@ import LpDetail from "./pages/LpDetail";
 import MyPage from "./pages/MyPage";
 import GoogleUserInformation from "./pages/GoogleUserInformation";
 import NotFound from "./pages/NotFound";
-import Guard from "./layout/Guard";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 
@@ -23,10 +22,14 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
+      // ✅ 콜백 경로 둘 다 받아주기 (백엔드 설정에 따라 어느 쪽이든 매칭)
       { path: "/oauth/google", element: <GoogleUserInformation /> },
-      { element: <Guard />, children: [{ path: "/lps/:lpId", element: <LpDetail /> }] },
+      { path: "/v1/auth/google/callback", element: <GoogleUserInformation /> },
+      // ✅ 상세는 공개(로그인 없이 열람 가능)
+      { path: "/lps/:lpId", element: <LpDetail /> },
     ],
   },
+  // ✅ 보호 구간은 마이페이지만
   { element: <ProtectedLayout />, children: [{ path: "/my", element: <MyPage /> }] },
   { path: "*", element: <NotFound /> },
 ]);

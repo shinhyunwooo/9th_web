@@ -1,42 +1,43 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"
-import type { Lp } from "../types/lp"
+import type { Lp } from "../types/lp";
 
-interface LpCardProps {
-  lp: Lp
-};
+interface LpCardProps { lp: Lp }
 
-const LpCard = ({lp}: LpCardProps) => {
-  const {accessToken} = useAuth();
+const LpCard = ({ lp }: LpCardProps) => {
   const navigate = useNavigate();
 
-  const handleLpCardClick = (id: number): void => {
-    const target = `/lps/${id}`
-    if (!accessToken){
-      alert("로그인이 필요한 서비스입니다. 로그인 해주세요.");
-      localStorage.setItem("postLoginRedirect", target);
-    }
-
-    navigate(target);
-  }
+  const goDetail = () => navigate(`/lps/${lp.id}`);
 
   return (
-    <div className="group relative" onClick={() => handleLpCardClick(lp.id)}>
-      <img 
-        className='w-[200px] h-full aspect-square overflow-hidden group-hover:scale-110' 
-        src={lp.thumbnail} 
+    <div
+      className="group relative cursor-pointer w-[200px]"
+      onClick={goDetail}
+      title={lp.title}
+    >
+      <img
+        className="w-[200px] h-[200px] rounded object-cover transition-transform group-hover:scale-110"
+        src={lp.thumbnail}
         alt={lp.title}
+        loading="lazy"
+        decoding="async"
+        width={200}
+        height={200}
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/fallback.png";
+          // 실패 이후에는 더 이상 onError 루프를 만들지 않도록 핸들러 제거 (안전장치)
+          e.currentTarget.onerror = null;
+        }}
       />
 
-      <div className="absolute inset-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 group-hover:bg-black/50 text-white group-hover:scale-110 p-2">
-        <h1 className="text-lg font-semibold truncate">{lp.title}</h1>
-        <div className="flex justify-between text-ms">
-          <p>{new Date(lp.updatedAt).toLocaleDateString()}</p>
-          <p>❤️ {lp.likes.length}</p>
+      <div className="pointer-events-none absolute inset-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 group-hover:bg-black/50 text-white p-2 transition-opacity rounded">
+        <h1 className="text-sm font-semibold truncate">{lp.title}</h1>
+        <div className="flex justify-between text-xs">
+          <time>{new Date(lp.updatedAt).toLocaleDateString()}</time>
+          <span>❤️ {lp.likes?.length ?? 0}</span>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LpCard
+export default LpCard;
