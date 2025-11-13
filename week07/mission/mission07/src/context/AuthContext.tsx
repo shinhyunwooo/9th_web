@@ -1,40 +1,34 @@
 import { createContext, useContext, useState, type PropsWithChildren } from "react";
-import type { RequestSigninDto } from "../types/auth";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
-import { postSignin, postSignout } from "../apis/auth";
 
 interface AuthContextType{
   accessToken: string | null;
   refreshToekn: string | null;
   name: string | null;
-  login: (signinData: RequestSigninDto) => Promise<void>;
-  logout: () => Promise<void>;
+  setAccessToken: (accessToken:string | null) => void;
+  setRefreshToekn: (refreshToken:string | null) => void;
+  setName: (name:string | null) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   refreshToekn: null,
   name: null,
-  login: async () => {},
-  logout: async () => {},
+  setAccessToken: (accessToken:string | null) => {void accessToken},
+  setRefreshToekn: (refreshToken:string | null) => { void refreshToken},
+  setName: (name:string | null) => {void name},
 });
 
 export const AuthProvider = ({children}: PropsWithChildren) => {
   const {
     getItem: getAccessTokenFromStorage,
-    setItem: setAccessTokenFromStorage,
-    removeItem: removeAccessTokenFromStorage,
   } = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
   const {
     getItem: getRefreshTokenFromStorage,
-    setItem: setRefreshTokenFromStorage,
-    removeItem: removeRefreshTokenFromStorage,
   } = useLocalStorage(LOCAL_STORAGE_KEY.refreshToken);
   const {
     getItem: getNameFromStorage,
-    setItem: setNameFromStorage,
-    removeItem: removeNameFromStorage,
   } = useLocalStorage(LOCAL_STORAGE_KEY.name);
 
   const [accessToken, setAccessToken] = useState<string | null>(
@@ -47,52 +41,8 @@ export const AuthProvider = ({children}: PropsWithChildren) => {
     getNameFromStorage(),
   );
 
-  const login = async (siginData:RequestSigninDto) => {
-    try{
-      const {data} = await postSignin(siginData);
-
-      if(data){
-        const newAccessToken = data.accessToken;
-        const newRefreshToken = data.refreshToken;
-        const newName = data.name;
-
-        setAccessTokenFromStorage(newAccessToken);
-        setRefreshTokenFromStorage(newRefreshToken);
-        setNameFromStorage(newName);
-
-        setAccessToken(newAccessToken);
-        setRefreshToekn(newRefreshToken);
-        setName(newName);
-        alert('로그인 성공');
-        window.location.href = '/';
-      }
-    } catch(error){
-      console.error('로그인 오류', error);
-      alert('로그인 실패');
-    }
-  };
-
-  const logout = async() => {
-    try{
-      await postSignout();
-      removeAccessTokenFromStorage();
-      removeRefreshTokenFromStorage();
-      removeNameFromStorage();
-
-      setAccessToken(null);
-      setRefreshToekn(null);
-      setName(null);
-
-      alert('로그아웃 성공');
-      window.location.href = "/";
-    }catch(error){
-      console.error('로그아웃 오류', error);
-      alert('로그아웃 실패');
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{accessToken, refreshToekn, name, login, logout}}>
+    <AuthContext.Provider value={{accessToken, refreshToekn, name, setAccessToken, setName, setRefreshToekn}}>
       {children}
     </AuthContext.Provider>
   );

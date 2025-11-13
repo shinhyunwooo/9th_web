@@ -3,7 +3,7 @@ import z from 'zod';
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
-import { useAuth } from "../context/AuthContext";
+import { usePostSignin } from "../hooks/mutations/usePostSignin";
 
 const schema = z.object({
   email: z.string().email({message: "올바른 이메일 형식이 아닙니다."}),
@@ -16,7 +16,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>;
 
 const Login = () => {
-  const {login} = useAuth();
+  const {mutate: loginM} = usePostSignin();
   const navigate = useNavigate();
 
   const{
@@ -36,13 +36,13 @@ const Login = () => {
   const pwdInvalidUI = touchedFields.password && !!errors.password;
 
   const email = watch("email");
-  const password = watch("password")
+  const password = watch("password");
   const canSubmit = useMemo(
     () => !!email && !!password && isValid && !isSubmitting, [email, password, isValid, isSubmitting]
   );
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    await login(data);
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    loginM(data);
   }
 
   const googleLogin = () => {

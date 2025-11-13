@@ -25,7 +25,7 @@ const schema = z.object({
     }),
   name: z.string().min(1, {message: "닉네임을 입력해주세요."}),
 })
-.refine((data: string) => data.password === data.passwordCheck, {
+.refine((data) => data.password === data.passwordCheck, {
   message: "비밀번호가 일치하지 않습니다.",
   path: ['passwordCheck'],
 });

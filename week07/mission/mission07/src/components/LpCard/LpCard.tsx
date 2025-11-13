@@ -21,7 +21,7 @@ const LpCard = ({lp}: LpCardProps) => {
   }
 
   return (
-    <div className="group relative" onClick={() => handleLpCardClick(lp.id)}>
+    <div className="group relative cursor-pointer" onClick={() => handleLpCardClick(lp.id)}>
       <img 
         className='w-[200px] h-full aspect-square overflow-hidden group-hover:scale-110' 
         src={lp.thumbnail} 

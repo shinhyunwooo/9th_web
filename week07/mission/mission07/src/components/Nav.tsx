@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext";
+import { useGetMyInfo } from "../hooks/queries/useGetMyInfo";
+import { usePostSignout } from "../hooks/mutations/usePostSignout";
 
 type NavProps ={
   onMenuClick?: () => void;
 };
 
 const Nav = ({onMenuClick}: NavProps) => {
-  const {accessToken, name} = useAuth();
-  const {logout} = useAuth();
+  const {accessToken} = useAuth();
+  const {data} = useGetMyInfo(accessToken);
+  const {mutate: logout} = usePostSignout()
 
-  const handleLogout = async ():Promise<void> => {
-    await logout();
+  const handleLogout = () => {
+    logout();
   }
 
   return (
@@ -45,7 +48,7 @@ const Nav = ({onMenuClick}: NavProps) => {
         {accessToken && (
           <>
             <h1 className="text-white p-2">
-              {name}님 반갑습니다.
+              {data?.name}님 반갑습니다.
             </h1>
             <button 
               onClick={() => handleLogout()}
