@@ -4,14 +4,9 @@ import { getLpList } from "../../apis/lp";
 import { QUERY_KEY } from "../../constants/key";
 import type { ResponseLpListDto } from "../../types/lp";
 
+type QueryKeyType = [string, PAGINATION_ORDER, ["search", string]];
 type InfiniteLpOptions = Omit<
-  UseInfiniteQueryOptions<
-    ResponseLpListDto,
-    Error,
-    ResponseLpListDto,
-    ResponseLpListDto,
-    [string, PAGINATION_ORDER, ["search", string]]
-  >,
+  UseInfiniteQueryOptions<ResponseLpListDto, Error, ResponseLpListDto, QueryKeyType, number>,
   "queryKey" | "queryFn" | "initialPageParam" | "getNextPageParam"
 >;
 
@@ -21,7 +16,7 @@ export const useGetInfiniteLpList = (
   order: PAGINATION_ORDER,
   options: InfiniteLpOptions = {}
 ) => {
-  return useInfiniteQuery({
+  return useInfiniteQuery<ResponseLpListDto, Error, ResponseLpListDto, QueryKeyType, number>({
     queryFn: ({ pageParam }) => getLpList({ cursor: pageParam, limit, search, order }),
     queryKey: [QUERY_KEY.lps, order, ["search", search]],
     initialPageParam: 0,

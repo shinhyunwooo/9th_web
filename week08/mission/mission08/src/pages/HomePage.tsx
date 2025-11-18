@@ -9,6 +9,8 @@ import SortBtn from "../components/SortBtn";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import SearchBar from "../components/SearchBar";
 import useDebounce from "../hooks/useDebounce";
+import useThrottle from "../hooks/useThrottle";
+import type { Lp } from "../types/lp";
 
 const HomePage = () => {
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.asc);
@@ -27,6 +29,7 @@ const HomePage = () => {
     enabled: shouldFetch,
   });
   const { ref, inView } = useInView({ threshold: 0 });
+  const throttledInView = useThrottle(inView, 1000);
   const navigate = useNavigate();
   const { getItem, removeItem } = useLocalStorage("postLoginRedirect");
 
@@ -39,14 +42,18 @@ const HomePage = () => {
   }, [getItem, removeItem, navigate]);
 
   useEffect(() => {
-    if (inView && !isFetching && Boolean(hasNextPage)) {
+    if (throttledInView && !isFetching && Boolean(hasNextPage)) {
       fetchNextPage();
     }
-  }, [inView, isFetching, hasNextPage, fetchNextPage]);
+  }, [throttledInView, isFetching, hasNextPage, fetchNextPage]);
 
-  const flattened = useMemo(() => (
-    pages?.pages?.map((p) => p.data.data).flat() ?? []
-  ), [pages]);
+  const flattened = useMemo<Lp[]>(() => {
+    if (!pages) {
+      return [];
+    }
+
+    return pages.pages.flatMap((page): Lp[] => page.data.data);
+  }, [pages]);
 
   if (error) {
     return <div className="text-white text-3xl">Error</div>
