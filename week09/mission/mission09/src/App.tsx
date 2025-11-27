@@ -4,6 +4,7 @@ import CartList from "./components/CartList";
 import Navbar from "./components/Navbar";
 import store from "./components/store/store";
 import PriceBox from './components/priceBox';
+import Modal from "./components/Modal";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Navbar/>
       <CartList/>
       <PriceBox/>
+      <Modal/>
     </Provider>
   );
 };
