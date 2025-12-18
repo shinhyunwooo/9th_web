@@ -1,5 +1,5 @@
 // src/pages/HomePage.tsx
-import React, { useState, useCallback, type FormEvent, useMemo } from 'react';
+import  { useState, useCallback, type FormEvent, useMemo } from 'react';
 import { useCustomFetch } from '../hooks/useCustomFetch';
 import type { Movie, MovieResponse } from '../types/movie';
 import MovieFilter from '../components/MovieFilter';

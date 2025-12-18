@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, memo } from 'react';
+import { type ChangeEvent, memo } from 'react';
 import SelectBox from './SelectBox';
 
 interface LanguageSelectorProps {

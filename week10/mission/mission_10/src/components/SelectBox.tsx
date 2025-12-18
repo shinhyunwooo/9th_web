@@ -1,4 +1,4 @@
-import React, { type SelectHTMLAttributes, memo } from 'react';
+import { type SelectHTMLAttributes, memo } from 'react';
 
 interface Option {
   value: string;

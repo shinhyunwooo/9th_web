@@ -1,4 +1,4 @@
-import React, { type FormEvent, memo } from 'react';
+import { type FormEvent, memo } from 'react';
 import Input from './Input';
 import LanguageSelector from './LanguageSelector';
 
