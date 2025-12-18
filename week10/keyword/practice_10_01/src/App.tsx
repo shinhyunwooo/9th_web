@@ -1,9 +1,9 @@
-import { UseCallbackPage } from "./UseCallbackPage";
+import { UseMemoPage } from "./UseMemoPage";
 
 function App() {
   return (
     <>
-      <UseCallbackPage />
+      <UseMemoPage />
     </>
   );
 }
